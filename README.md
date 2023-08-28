@@ -29,5 +29,15 @@ This can be simplified into its lowest common representation (e.g. `1d11+1` = `2
 
 Examples: `1d6+5`, `2d8+1d4-5`.
 
+### Advantage
+
+Any rolled object can be converted to an 'advantage' version.
+When rolled, this will roll twice and return the higher of the two values.
+
+### Disadvantage
+
+Any rolled object can be converted to an 'disadvantage' version.
+When rolled, this will roll twice and return the lower of the two values.
+
 
 

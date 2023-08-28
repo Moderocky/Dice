@@ -15,7 +15,7 @@ public record Score(Rolled... values) implements Rolled {
         final List<Rolled> list = new ArrayList<>(8);
         int start = 0;
         do {
-            final Reader reader = Rolled.read(counter, start);
+            final Reader reader = Score.read(counter, start);
             if (!reader.success()) break;
             list.add(reader.rolled());
             start = reader.pointer();
@@ -25,6 +25,36 @@ public record Score(Rolled... values) implements Rolled {
 
     public static Score of(String counter) {
         return new Score(Score.values(counter));
+    }
+
+    private static Reader read(String text, final int start) {
+        if (text == null) return new Reader(null, start);
+        final int length = text.length();
+        if (length == 0 || start >= length) return new Reader(null, start);
+        if (text.substring(start).isBlank()) return new Reader(null, start);
+        int pointer = start;
+        boolean d = false, bump = false;
+        end:
+        while (pointer < length) {
+            final char c = text.charAt(pointer);
+            switch (c) {
+                case 'd':
+                    d = true;
+                    break;
+                case '+':
+                    bump = true;
+                    break end;
+                case '-':
+                    if (pointer == start) break;
+                    if (text.substring(start, pointer - 1).isBlank()) break;
+                    break end;
+            }
+            pointer++;
+        }
+        final String part = text.substring(start, pointer);
+        if (bump) pointer++;
+        if (d) return new Reader(new Dice(part.trim()), pointer);
+        else return new Reader(new Bonus(part.trim()), pointer);
     }
 
     public Rolled simplify() {
@@ -99,6 +129,14 @@ public record Score(Rolled... values) implements Rolled {
     @Override
     public int hashCode() {
         return Arrays.hashCode(values);
+    }
+
+    protected record Reader(Rolled rolled, int pointer) {
+
+        public boolean success() {
+            return rolled != null;
+        }
+
     }
 
 }

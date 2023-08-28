@@ -11,39 +11,16 @@ public interface Rolled {
 
     Random DEFAULT_RANDOM = new Random();
 
-    static Reader read(String text, final int start) {
-        if (text == null) return new Reader(null, start);
-        final int length = text.length();
-        if (length == 0 || start >= length) return new Reader(null, start);
-        if (text.substring(start).isBlank()) return new Reader(null, start);
-        int pointer = start;
-        boolean d = false, bump = false;
-        end:
-        while (pointer < length) {
-            final char c = text.charAt(pointer);
-            switch (c) {
-                case 'd':
-                    d = true;
-                    break;
-                case '+':
-                    bump = true;
-                    break end;
-                case '-':
-                    if (pointer == start) break;
-                    if (text.substring(start, pointer - 1).isBlank()) break;
-                    break end;
-            }
-            pointer++;
-        }
-        final String part = text.substring(start, pointer);
-        if (bump) pointer++;
-        if (d) return new Reader(new Dice(part.trim()), pointer);
-        else return new Reader(new Bonus(part.trim()), pointer);
-
-    }
-
     default int roll() {
         return this.roll(Rolled.DEFAULT_RANDOM);
+    }
+
+    default Rolled advantage() {
+        return new Advantage(this);
+    }
+
+    default Rolled disadvantage() {
+        return new Disadvantage(this);
     }
 
     int roll(Random random);
@@ -54,10 +31,56 @@ public interface Rolled {
 
     int range();
 
-    record Reader(Rolled rolled, int pointer) {
+    record Advantage(Rolled rolled) implements Rolled {
 
-        public boolean success() {
-            return rolled != null;
+        @Override
+        public int roll(Random random) {
+            final int x = rolled.roll(random), y;
+            if (x == rolled.max()) return x;
+            y = rolled.roll(random);
+            return Math.max(x, y);
+        }
+
+        @Override
+        public int min() {
+            return rolled.min();
+        }
+
+        @Override
+        public int max() {
+            return rolled.max();
+        }
+
+        @Override
+        public int range() {
+            return rolled.range();
+        }
+
+    }
+
+    record Disadvantage(Rolled rolled) implements Rolled {
+
+        @Override
+        public int roll(Random random) {
+            final int x = rolled.roll(random), y;
+            if (x == rolled.min()) return x;
+            y = rolled.roll(random);
+            return Math.min(x, y);
+        }
+
+        @Override
+        public int min() {
+            return rolled.min();
+        }
+
+        @Override
+        public int max() {
+            return rolled.max();
+        }
+
+        @Override
+        public int range() {
+            return rolled.range();
         }
 
     }
