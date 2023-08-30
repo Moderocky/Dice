@@ -12,8 +12,10 @@ public record Dice(int rolls, int sides) implements Rolled {
 
     public static final Dice D1 = new Dice(1, 1),
         D4 = new Dice(1, 4),
+        D6 = new Dice(1, 6),
         D8 = new Dice(1, 8),
-        D6 = new Dice(1, 6), D20 = new Dice(1, 20);
+        D10 = new Dice(1, 10),
+        D20 = new Dice(1, 20);
 
     public Dice(String text) {
         this(Dice.unpack(text));
@@ -44,10 +46,13 @@ public record Dice(int rolls, int sides) implements Rolled {
     }
 
     @Override
+    public int approximateRoll() {
+        return Rolled.DEFAULT_RANDOM.nextInt(rolls, sides * rolls + 1);
+    }
+
+    @Override
     public int roll(Random random) {
-        int total = 0;
-        for (int i = 0; i < rolls; i++) total += random.nextInt(0, sides) + 1;
-        return total;
+        return random.nextInt(rolls, sides * rolls + 1);
     }
 
     @Override
