@@ -6,18 +6,36 @@ public class ScoreTest {
 
     @Test
     public void roll() {
+        final Score score = new Score("3d6+2");
+        for (int i = 0; i < 1000; i++) {
+            assert score.roll() >= (2 + 3);
+            assert score.roll() <= (2 + 3 * 6);
+        }
     }
 
     @Test
     public void min() {
+        final Score score = new Score("2d6-1");
+        for (int i = 0; i < 1000; i++) assert score.roll() >= 1;
     }
 
     @Test
     public void max() {
+        final Score score = new Score("1d6+1d20");
+        for (int i = 0; i < 1000; i++) assert score.roll() <= (6 + 20);
     }
 
     @Test
     public void range() {
+        assert new Score("1d6+1d20").range() == 25;
+        for (int i = 0; i < 1000; i++) {
+            final int a = Rolled.DEFAULT_RANDOM.nextInt(1, 50), b = Rolled.DEFAULT_RANDOM.nextInt(1, 50);
+            final Dice first = new Dice(1, a), second = new Dice(1, b);
+            assert first.range() == a;
+            assert second.range() == b;
+            final Score score = new Score(first, second);
+            assert score.range() == a + b - 1;
+        }
     }
 
     @Test
