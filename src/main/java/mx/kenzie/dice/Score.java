@@ -5,7 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public record Score(Rolled... values) implements Rolled {
+public record Score(int min, int max, Rolled... values) implements Rolled {
+
+    public Score(Rolled... values) {
+        this(Score.min(values), Score.max(values), values);
+    }
 
     public Score(String counter) {
         this(Score.values(counter));
@@ -57,6 +61,18 @@ public record Score(Rolled... values) implements Rolled {
         else return new Reader(new Bonus(part.trim()), pointer);
     }
 
+    private static int min(Rolled... values) {
+        int value = 0;
+        for (final Rolled rolled : values) value += rolled.min();
+        return value;
+    }
+
+    public static int max(Rolled... values) {
+        int value = 0;
+        for (final Rolled rolled : values) value += rolled.max();
+        return value;
+    }
+
     public Rolled simplify() {
         if (this.values.length < 2) return this;
         final int min = this.min(), max = this.max();
@@ -78,20 +94,6 @@ public record Score(Rolled... values) implements Rolled {
     public int roll(Random random) {
         int value = 0;
         for (final Rolled rolled : values) value += rolled.roll(random);
-        return value;
-    }
-
-    @Override
-    public int min() {
-        int value = 0;
-        for (final Rolled rolled : values) value += rolled.min();
-        return value;
-    }
-
-    @Override
-    public int max() {
-        int value = 0;
-        for (final Rolled rolled : values) value += rolled.max();
         return value;
     }
 
