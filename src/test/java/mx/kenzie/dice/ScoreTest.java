@@ -65,6 +65,12 @@ public class ScoreTest {
         assert this.simplify("1d5+1").equals("2d3") : this.simplify("1d5+1");
         assert this.effectivelyEqual(new Dice("4d6"), new Score("1d21+3"));
         assert this.simplify("1d21+3").equals("4d6") : this.simplify("1d21+3");
+        assert this.simplify("2d6+1d8+14").equals("17d2") : this.simplify("2d6+1d8+14");
+        assert this.effectivelyEqual(new Score("17d2"), new Score("1d18+16"));
+        assert this.effectivelyEqual(new Score("17d2+2"), new Score("2d6+1d8+16"));
+        assert this.effectivelyEqual(new Score("1d18+18"), new Score("2d6+1d8+16"));
+        assert this.effectivelyEqual(new Score("1d18+18"), new Score("17d2+2"));
+        assert this.simplify("2d6+1d8+16").equals("1d18+18") : this.simplify("2d6+1d8+16");
     }
 
     private String simplify(String counter) {
