@@ -11,9 +11,9 @@ import java.util.Random;
  * It's not Rick I promise.
  */
 public interface Rolled extends Comparable<Rolled>, Serializable {
-
+    
     Random DEFAULT_RANDOM = new Random();
-
+    
     /**
      * Compares this Rolled object with another Rolled object.
      *
@@ -30,11 +30,11 @@ public interface Rolled extends Comparable<Rolled>, Serializable {
         if (this.min() <= o.min() && this.max() <= o.max()) return -1;
         return Integer.compare(this.min() + (this.range() / 2), o.min() + (o.range() / 2));
     }
-
+    
     default int roll() {
         return this.roll(Rolled.DEFAULT_RANDOM);
     }
-
+    
     /**
      * A faster rolling method that produces a value between the minimum and maximum, ignoring biases.
      * Generates a random number between the min and max values (inclusive)
@@ -45,25 +45,25 @@ public interface Rolled extends Comparable<Rolled>, Serializable {
     default int approximateRoll() {
         return DEFAULT_RANDOM.nextInt(this.min(), this.max() + 1);
     }
-
+    
     default Rolled advantage() {
         return new Advantage(this);
     }
-
+    
     default Rolled disadvantage() {
         return new Disadvantage(this);
     }
-
+    
     int roll(Random random);
-
+    
     int min();
-
+    
     int max();
-
+    
     int range();
-
+    
     record Advantage(Rolled rolled) implements Rolled {
-
+        
         @Override
         public int roll(Random random) {
             final int x = rolled.roll(random), y;
@@ -71,26 +71,26 @@ public interface Rolled extends Comparable<Rolled>, Serializable {
             y = rolled.roll(random);
             return Math.max(x, y);
         }
-
+        
         @Override
         public int min() {
             return rolled.min();
         }
-
+        
         @Override
         public int max() {
             return rolled.max();
         }
-
+        
         @Override
         public int range() {
             return rolled.range();
         }
-
+        
     }
-
+    
     record Disadvantage(Rolled rolled) implements Rolled {
-
+        
         @Override
         public int roll(Random random) {
             final int x = rolled.roll(random), y;
@@ -98,22 +98,22 @@ public interface Rolled extends Comparable<Rolled>, Serializable {
             y = rolled.roll(random);
             return Math.min(x, y);
         }
-
+        
         @Override
         public int min() {
             return rolled.min();
         }
-
+        
         @Override
         public int max() {
             return rolled.max();
         }
-
+        
         @Override
         public int range() {
             return rolled.range();
         }
-
+        
     }
-
+    
 }

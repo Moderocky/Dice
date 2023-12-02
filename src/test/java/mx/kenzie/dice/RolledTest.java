@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.Random;
 
 public class RolledTest {
-
+    
     public static void checkAdvantageAverage() {
         //<editor-fold desc="Print" defaultstate="collapsed">
         final Random random = Rolled.DEFAULT_RANDOM;
@@ -57,7 +57,7 @@ public class RolledTest {
         }
         //</editor-fold>
     }
-
+    
     @Test
     public void advantage() {
         final Dice dice = Dice.D20;
@@ -67,7 +67,7 @@ public class RolledTest {
             assert rolled.roll() <= 20;
         }
     }
-
+    
     @Test
     public void disadvantage() {
         final Dice dice = Dice.D20;
@@ -77,5 +77,5 @@ public class RolledTest {
             assert rolled.roll() <= 20;
         }
     }
-
+    
 }
