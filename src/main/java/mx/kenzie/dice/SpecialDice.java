@@ -1,12 +1,24 @@
 package mx.kenzie.dice;
 
+import java.io.Serial;
 import java.util.Objects;
 import java.util.Random;
 
 /**
  * A special die that uses an abstract number rather than the dice int.
  */
-public record SpecialDie(Number rolls, Number sides) implements Rolled {
+public class SpecialDice extends Dice implements Rolled {
+    
+    @Serial
+    private static final long serialVersionUID = 0L;
+    private final Number rolls;
+    private final Number sides;
+    
+    public SpecialDice(Number rolls, Number sides) {
+        super(0, 0);
+        this.rolls = rolls;
+        this.sides = sides;
+    }
     
     @Override
     public int approximateRoll() {
@@ -36,7 +48,7 @@ public record SpecialDie(Number rolls, Number sides) implements Rolled {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SpecialDie dice)) return false;
+        if (!(o instanceof SpecialDice dice)) return false;
         return Objects.equals(rolls, dice.rolls) && Objects.equals(sides, dice.sides);
     }
     
@@ -49,5 +61,16 @@ public record SpecialDie(Number rolls, Number sides) implements Rolled {
     public String toString() {
         return rolls + "d" + sides;
     }
+    
+    @Override
+    public int rolls() {
+        return rolls.intValue();
+    }
+    
+    @Override
+    public int sides() {
+        return sides.intValue();
+    }
+    
     
 }
